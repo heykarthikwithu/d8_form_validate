@@ -1,0 +1,57 @@
+<?php
+
+/**
+ * @file
+ * Contains d8_form_validate.module..
+ */
+
+use Drupal\Core\Routing\RouteMatchInterface;
+use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Form\FormState;
+
+/**
+ * @param $form
+ * @param FormStateInterface $form_state
+ * @param $form_id
+ */
+function d8_form_validate_form_alter(&$form, FormStateInterface $form_state, $form_id) {
+  if (strpos($form_id, 'user_') !== FALSE && strpos($form_id, '_form') !== FALSE) {
+    $form['#validate'][] = 'custom_validate';
+  }
+}
+
+/**
+ * @param $form
+ * @param FormStateInterface $form_state
+ */
+function custom_validate($form, FormStateInterface $form_state) {
+  $mail = $form_state->getValue('mail');
+  if(valid_email_address($mail)) {
+    $form_state->setErrorByName('mail', 'Not a valid email address.');
+  }
+}
+
+/**
+ * Implements hook_help().
+ */
+function d8_form_validate_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
+    // Main module help for the d8_form_validate module.
+    case 'help.page.d8_form_validate':
+      $output = '';
+      $output .= '<h3>' . t('About') . '</h3>';
+      $output .= '<p>' . t('D8, how to use form validate.') . '</p>';
+      return $output;
+
+    default:
+  }
+}
+
+/**
+ * Implements hook_theme().
+ */
+function d8_form_validate_theme() {
+  $theme = [];
+
+  return $theme;
+}
